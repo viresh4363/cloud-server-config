@@ -1,0 +1,42 @@
+server:
+  port: 9501
+
+spring:
+  application:
+    name: ApiGateway
+  cloud.gateway:
+    routes:
+      - id: employee
+        uri: lb://employee-service
+        predicates:
+          - Path=/employee/**
+        filters:
+          - name: CircuitBreaker
+            args:
+              name: employeeCircuitBreaker
+              fallbackUri: forward:/employeeService
+      - id: department
+        uri: lb://departments-service
+        predicates:
+          - Path=/department/**
+        filters:
+          - name: CircuitBreaker
+            args:
+              name: departmentCircuitBreaker
+              fallbackUri: forward:/departmentService
+
+management:
+  endpoint:
+    web:
+      exposure:
+        include:
+          - hystrix.stream
+
+hystrix:
+  commond:
+    fallbackcmd:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 5000
+
