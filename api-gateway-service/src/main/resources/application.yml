@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: ApiGateway
+  main:
+    web-application-type: reactive
   cloud.gateway:
     routes:
       - id: employee
@@ -26,11 +28,11 @@ spring:
               fallbackUri: forward:/departmentService
 
 management:
-  endpoint:
+  endpoints:
     web:
       exposure:
-        include:
-          - hystrix.stream
+        include: "*"
+
 
 hystrix:
   commond:
